@@ -1,0 +1,8 @@
+cloudpickle==3.1.1
+millify==0.1.1
+numpy==1.25.2
+pandas==2.3.1
+plotly==6.2.0
+pyjanitor==0.31.0
+streamlit==1.48.0
+streamlit_echarts==0.4.0
