@@ -6,3 +6,4 @@ plotly==6.2.0
 pyjanitor==0.31.0
 streamlit==1.48.0
 streamlit_echarts==0.4.0
+sklearn
