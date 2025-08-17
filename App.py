@@ -16,7 +16,7 @@ st.markdown("""
     <style>
         /* Reducir padding del main */
         .block-container {
-            padding-top: 0rem; /* antes suele ser ~6rem */
+            padding-top: 2rem; /* antes suele ser ~6rem */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -51,6 +51,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Add image to sidebar from the folder
+#st.sidebar.image("Images/risk_score.jpg", use_container_width=True)
 
 
 st.sidebar.title("Loan Application")
@@ -94,7 +96,7 @@ with tab2:
         )
         housing = st.selectbox("Housing", options=['MORTGAGE', 'RENT', 'OWN', 'OTHER'])
         rating = st.selectbox("Credit Rating", options=["A", "B", "C", "D", "E", "F", "G","Unknown"])
-        dti = st.number_input("Debt-to-Income Ratio (%)", min_value=0.0, value=33.0, step=0.1)
+        dti = st.number_input("Debt-to-Income Ratio (%)", min_value=0.0, value=30.0, step=5.0)
 
     # Additional fields for credit history
     with st.expander(label = "Credit History", expanded=False):
@@ -103,10 +105,10 @@ with tab2:
         num_cancellations_12m = st.number_input("Cancellations in Last 12 Months", min_value=0, value=1, step=1)
         num_derogatory_marks = st.number_input("Number of Derogatory Marks", min_value=0, value=1, step=1)
         months_since_last_delinquency = st.number_input("Months Since Last Delinquency", min_value=0, value=0, step=1)
-        pct_cards_over_75p = st.number_input("Cards Over 75% Utilization (%)", min_value=0.0, value=20.0, step=0.1)
-        pct_revolving_utilization = st.number_input("Revolving Utilization (%)", min_value=0.0, value=20.0, step=0.1)
-        interest_rate = st.number_input("Interest Rate on Revolving (%)", min_value=0.0, value=10.0, step=0.1)
-        installment_amount = st.number_input("Installment Amount (€)", min_value=0, value=100, step=1)
+        pct_cards_over_75p = st.number_input("Cards Over 75% Utilization (%)", min_value=0.0, value=20.0, step=5.0)
+        pct_revolving_utilization = st.number_input("Revolving Utilization (%)", min_value=0.0, value=20.0, step=5.0)
+        interest_rate = st.number_input("Interest Rate on Revolving (%)", min_value=0.0, value=10.0, step=1.0)
+        installment_amount = st.number_input("Installment Amount (€)", min_value=0, value=100, step=5)
     
 
 # ------------------------------
@@ -114,9 +116,9 @@ with tab2:
 # ------------------------------
 with tab3:
     #st.subheader("Market Factors")
-    euribor_6m = st.number_input("Euribor 6M (%)", min_value=-5.0, value=2.0, step=0.01)
-    k_pct = st.number_input("K_pct (%)", min_value=0.0, value=0.5, step=0.01)
-    r_capital = st.number_input("R Capital (%)", min_value=0.0, value=5.0, step=0.1)
+    euribor_6m = st.number_input("Euribor 6M (%)", min_value=-5.0, value=2.0, step=0.1)
+    k_pct = st.number_input("K_pct (%)", min_value=0.0, value=0.5, step=0.1)
+    r_capital = st.number_input("R Capital (%)", min_value=0.0, value=5.0, step=1.0)
     op_cost_rate = st.number_input("Operational Cost Rate (%)", min_value=0.0, value=0.5, step=0.1)
     margin_rate = st.number_input("Margin Rate (%)", min_value=0.0, value=0.5, step=0.1)
 
@@ -127,6 +129,10 @@ calculate_pressed = st.sidebar.button("Calculate", type="primary")
 # -------------------
 # MAIN PAGE
 # -------------------
+
+# Add image from the folder
+#st.image("Images/test3.png", use_container_width = 200)
+
 st.title("Risk Scoring Analyzer")
 
 if not calculate_pressed:
@@ -226,7 +232,7 @@ else:
             ))
 
             fig.update_layout(
-                margin=dict(l=10, r=10, t=30, b=20),  # Reduce márgenes del gráfico
+                margin=dict(l=10, r=10, t=100, b=20),  # Reduce márgenes del gráfico
                 height=250,  # Ajusta la altura si quieres
                 width=250    # Ajusta el ancho si quieres
             )
@@ -241,18 +247,29 @@ else:
 
             formatted_loss = millify(expected_loss_eur, precision=2)
 
-            st.metric("Expected Loss", f"{expected_loss_percent:.2f}% (€{formatted_loss})")
+            col11, col12 = st.columns([7, 25])
+
+            with col12:
+
+                st.metric("Expected Loss", f"{expected_loss_percent:.2f}% (€{formatted_loss})")
 
         with col2:
             st.plotly_chart(create_gauge(ead_value, "Exposure at Default", "red"), use_container_width=True)
 
-            st.metric("Recommended Loan APR", f"{tae_percent:.2f}%")
+            col21, col22 = st.columns([10, 23])
+
+            with col22:
+
+                st.metric("Recommended EAR", f"{tae_percent:.2f}%")
 
         with col3:
             st.plotly_chart(create_gauge(lgd_value, "Loss Given Default", "red"), use_container_width=True)
-            #st_echarts(options=option, height="300px", width="300px")
 
-            st.metric("Monthly Payment", f"€{monthly_payment_eur:,.2f}")
+            col31, col32 = st.columns([10, 25])
+
+            with col32:
+
+                st.metric("Monthly Payment", f"€{monthly_payment_eur:,.2f}")
 
 
         
